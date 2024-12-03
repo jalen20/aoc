@@ -6,11 +6,11 @@ fn main() {
 
     let input = process_input(data);
 
-    let p1_solution = part_1(input);
+    let p1_solution = part_1(input.clone());
     println!("Part 1 solution: {}", p1_solution);
 
-    // let p2_solution = part_2(list_1, list_2);
-    // println!("Part 2 solution: {}", p2_solution)
+    let p2_solution = part_2(input);
+    println!("Part 2 solution: {}", p2_solution)
 }
 
 fn process_input(input: String) -> Vec<Vec<i64>> {
@@ -59,4 +59,29 @@ fn is_safe_report(report: &[i64]) -> bool {
 
 fn part_1(input: Vec<Vec<i64>>) -> i64 {
     input.iter().filter(|report| is_safe_report(report)).count() as i64
+}
+
+fn part_2(input: Vec<Vec<i64>>) -> i64 {
+    input
+        .iter()
+        .map(|report| {
+            if is_safe_report(report) {
+                return 1 as i64;
+            }
+
+            for skip_idx in 0..report.len() {
+                let modified_report: Vec<i64> = report
+                    .iter()
+                    .enumerate()
+                    .filter(|(idx, _)| *idx != skip_idx)
+                    .map(|(_, &val)| val)
+                    .collect();
+
+                if is_safe_report(&modified_report) {
+                    return 1 as i64;
+                }
+            }
+            return 0 as i64;
+        })
+        .sum()
 }
